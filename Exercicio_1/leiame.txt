@@ -1,0 +1,11 @@
+Nome: Thais Karolynne Mendes Rodrigues - RA: 11201920187
+
+Identificação do arquivo com a função main:
+- A função principal está no arquivo mediana.c.
+
+Instruções para compilação:
+- Para compilar o programa, use o comando:
+    gcc -o mediana mediana.c
+
+Ou, caso esteja usando um Makefile, o comando para compilar pode ser:
+    make mediana
