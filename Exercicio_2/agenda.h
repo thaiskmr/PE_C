@@ -2,13 +2,13 @@
 #define AGENDA_H
 
 typedef struct Telefone {
-    int ddd;
+    char ddd[3];
     char numero[9]; 
     struct Telefone *prox;
 } Telefone;
 
-void inserir(Telefone **lista, int ddd, char *numero);
-void remover(Telefone **lista, int ddd, char *numero);
+void inserir(Telefone **lista, char *ddd, char *numero);
+void remover(Telefone **lista, char *ddd, char *numero);
 int contar_elementos(Telefone *lista);
 Telefone *copiar_para_vetor(Telefone *lista, int tamanho);
 void ordenar_telefones(Telefone *vetor, int tamanho);

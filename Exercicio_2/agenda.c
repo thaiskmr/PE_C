@@ -3,22 +3,22 @@
 #include <string.h>
 #include "agenda.h"
 
-void inserir(Telefone **lista, int ddd, char *numero) {
+void inserir(Telefone **lista, char *ddd, char *numero) {
     Telefone *novo = (Telefone *)malloc(sizeof(Telefone));
     if (!novo) {
         printf("Erro de alocação\n");
         exit(1);
     }
-    novo->ddd = ddd;
+    strcpy(novo->ddd, ddd);
     strcpy(novo->numero, numero);
     novo->prox = *lista;
     *lista = novo;
 }
 
-void remover(Telefone **lista, int ddd, char *numero) {
+void remover(Telefone **lista, char *ddd, char *numero) {
     Telefone *atual = *lista, *anterior = NULL;
     while (atual) {
-        if (atual->ddd == ddd && strcmp(atual->numero, numero) == 0) {
+        if (strcmp(atual->ddd, ddd) == 0 && strcmp(atual->numero, numero) == 0) {
             if (anterior)
                 anterior->prox = atual->prox;
             else
@@ -47,7 +47,8 @@ Telefone *copiar_para_vetor(Telefone *lista, int tamanho) {
         exit(1);
     }
     for (int i = 0; lista; i++) {
-        vetor[i] = *lista;
+        strcpy(vetor[i].ddd, lista->ddd);
+        strcpy(vetor[i].numero, lista->numero);
         lista = lista->prox;
     }
     return vetor;
@@ -56,8 +57,9 @@ Telefone *copiar_para_vetor(Telefone *lista, int tamanho) {
 int comparar(const void *a, const void *b) {
     Telefone *t1 = (Telefone *)a;
     Telefone *t2 = (Telefone *)b;
-    if (t1->ddd != t2->ddd)
-        return t1->ddd - t2->ddd;
+    int cmpDDD = strcmp(t1->ddd, t2->ddd);
+    if (cmpDDD != 0)
+        return cmpDDD;
     return strcmp(t1->numero, t2->numero);
 }
 
@@ -73,7 +75,7 @@ void salvar_arquivo(Telefone *vetor, int tamanho, char *nome_saida) {
     }
     fprintf(arquivo, "%d\n", tamanho);
     for (int i = 0; i < tamanho; i++)
-        fprintf(arquivo, "%d\n%s\n", vetor[i].ddd, vetor[i].numero);
+        fprintf(arquivo, "%s\n%s\n", vetor[i].ddd, vetor[i].numero);
     fclose(arquivo);
 }
 
@@ -87,47 +89,4 @@ void liberar_lista(Telefone *lista) {
 
 void liberar_vetor(Telefone *vetor) {
     free(vetor);
-}
-
-int main() {
-    char arquivo_entrada[100], arquivo_saida[100];
-    Telefone *lista = NULL;
-    int n_operacoes, ddd;
-    char numero[9], operacao;
-
-    scanf("%s", arquivo_entrada);
-    scanf("%s", arquivo_saida);
-
-    FILE *arquivo = fopen(arquivo_entrada, "r");
-    if (!arquivo) {
-        printf("Erro ao abrir arquivo de entrada\n");
-        return 1;
-    }
-
-    fscanf(arquivo, "%d", &n_operacoes);
-
-    for (int i = 0; i < n_operacoes; i++) {
-        fscanf(arquivo, " %c", &operacao);
-        fscanf(arquivo, "%d", &ddd);
-        fscanf(arquivo, "%s", numero);
-
-        if (operacao == 'I') {
-            inserir(&lista, ddd, numero);
-        } else if (operacao == 'R') {
-            remover(&lista, ddd, numero);
-        }
-    }
-
-    fclose(arquivo);
-
-    int tamanho = contar_elementos(lista);
-    Telefone *vetor = copiar_para_vetor(lista, tamanho);
-    ordenar_telefones(vetor, tamanho);
-
-    salvar_arquivo(vetor, tamanho, arquivo_saida);
-
-    liberar_lista(lista);
-    liberar_vetor(vetor);
-
-    return 0;
 }
